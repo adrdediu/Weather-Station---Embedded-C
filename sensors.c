@@ -73,12 +73,6 @@ char read_data_from_dht11(unsigned char *data_byte_dht)
 return 0 ; // everything ok
 }
 
-
-
-
-
-
-
 //HCZ H8 A analog resistive humidity sensor
 
 float hcz_h8a_calculate_humidity(unsigned int adc_data_from_hczh8a , float temp)
@@ -86,21 +80,16 @@ float hcz_h8a_calculate_humidity(unsigned int adc_data_from_hczh8a , float temp)
 	// Calibrating temperature approximation according to a threshold
 	 const static char temp_values[12] ={5,10,15,20,25,30,35,40,45,50,55,60};
     char new_designated_temp=0;
-	for(char temp_value_index = 1; temp_value_index <=11; temp_value_index++)
-	{
-		if(temp<=temp_values[temp_value_index])
-		{
-				float temp_treshold = (temp_values[temp_value_index]+temp_values[temp_value_index-1])/2.0;
-				if(temp<temp_treshold) 
-					new_designated_temp = temp_values[temp_value_index-1];
-				else
-					new_designated_temp = temp_values[temp_value_index];
+	for(char temp_value_index = 1; temp_value_index <=11; temp_value_index++) {
+		if(temp<=temp_values[temp_value_index]) {
+			float temp_treshold = (temp_values[temp_value_index]+temp_values[temp_value_index-1])/2.0;
+			if(temp<temp_treshold) new_designated_temp = temp_values[temp_value_index-1];
+			else new_designated_temp = temp_values[temp_value_index];
 			temp_value_index +=11;
 		}
 	}
-
 	const static unsigned int hczh8a_adc_values[12][15]={
-				/* 5 C - 14*/			    {0, 1008,993,956,890,783,644,480,339,223,138,83,48,27,15},
+				/* 5 C - 14*/			{0, 1008,993,956,890,783,644,480,339,223,138,83,48,27,15},
 				/*10 C - 15*/		    {1013,1003,981,932,845,720,577,414,286,183,117,71,43,25,15},
 				/*15 C - 15*/			{1010,995,964,902,798,654,499,361,244,159,100,62,39,24,14},
 				/*20 C - 15*/		    {1005,986,946,867,748,590,438,310,206,133,89,55,35,22,14},
@@ -114,12 +103,10 @@ float hcz_h8a_calculate_humidity(unsigned int adc_data_from_hczh8a , float temp)
 				/*60 C - 15*/           {956,882,753,563,391,260,173,117,83,57,41,30,22,16,11}
     };
     char hczh8a_adc_values_row =new_designated_temp/5-1;
-    for(char hczh8a_adc_values_column = 0;hczh8a_adc_values_column<=13;hczh8a_adc_values_column++)
-    {
-        if(adc_data_from_hczh8a>=hczh8a_adc_values[hczh8a_adc_values_row][hczh8a_adc_values_column+1])
-        {   int x1 = hczh8a_adc_values[hczh8a_adc_values_row][hczh8a_adc_values_column+1];
+    for(char hczh8a_adc_values_column = 0;hczh8a_adc_values_column<=13;hczh8a_adc_values_column++) {
+    	if(adc_data_from_hczh8a>=hczh8a_adc_values[hczh8a_adc_values_row][hczh8a_adc_values_column+1]) {   
+			int x1 = hczh8a_adc_values[hczh8a_adc_values_row][hczh8a_adc_values_column+1];
             int x2 =hczh8a_adc_values[hczh8a_adc_values_row][hczh8a_adc_values_column];
-         
             int y1=(hczh8a_adc_values_column+1)*5+20;
             return (-5.0*(adc_data_from_hczh8a-x1)/(x2-x1)+y1);
         }
